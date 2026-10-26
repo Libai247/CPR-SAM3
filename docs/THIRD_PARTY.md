@@ -28,7 +28,17 @@ does not imply their authors endorse this implementation.
 
 ## Weights and Data
 
-No model checkpoint, tokenizer asset, dataset, original-image sample or access
+No model checkpoint, tokenizer asset, standalone dataset sample or access
 token is included. Users obtain each asset directly through its official
 provider and accept the associated terms. Do not upload access tokens or
 restricted files to GitHub, Git LFS or a public release attachment.
+
+## Manuscript Figures
+
+`assets/framework.png` and `assets/qualitative.png` are the authors' existing
+manuscript Figures 3 and 5, respectively, copied without changing the depicted
+method or predictions. They are illustrative manuscript results, not outputs
+of a new validation run. The figures contain benchmark image crops; the
+underlying imagery remains subject to the original dataset terms:
+[ISPRS](https://www.isprs.org/resources/datasets/benchmarks/UrbanSemLab/semantic-labeling.aspx)
+and [OpenEarthMap](https://www.open-earth-map.org/).

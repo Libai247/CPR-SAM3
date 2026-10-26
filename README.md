@@ -1,175 +1,153 @@
-# CPR-SAM3
+<div align="center">
 
-**Complementary Prediction Reconciliation for Training-Free Remote-Sensing
-Open-Vocabulary Semantic Segmentation**
+<h1>CPR-SAM3</h1>
+<h3>Complementary Prediction Reconciliation for Training-Free<br>Remote-Sensing Open-Vocabulary Semantic Segmentation</h3>
 
-Huasong Chen, Wenting Li, Chuihao Meng, Tianzuo Nie, Yongjun Zhang
+<p>
+Huasong Chen<sup>1</sup>, Wenting Li<sup>2</sup>, Chuihao Meng<sup>1</sup>,
+Tianzuo Nie<sup>1</sup>, Yongjun Zhang<sup>1</sup>
+</p>
+<p><sup>1</sup>Guizhou University &nbsp; <sup>2</sup>Guizhou University of Commerce</p>
 
-Research code for recovering alternative SAM3 predictions, evaluating their
-appearance with frozen DINOv3 prototypes, and reconciling candidate conflicts.
-Neither backbone is trained by this repository.
+[Overview](#overview) | [Results](#results) | [Installation](#installation) | [Usage](#usage) | [Citation](#citation)
 
-## Release Status
+</div>
 
-This is a source-release draft assembled from the existing research code.
-CPU helper tests and source checks are provided. End-to-end CUDA inference,
-fresh-machine installation and exact reproduction of the manuscript tables
-have **not** been validated for this packaged release. See
-[reproducibility notes](docs/REPRODUCIBILITY.md) before interpreting results.
-The preserved implementation contains additional gates and routing rules
-beyond the manuscript's compact mathematical description.
+## Overview
 
-## Repository Layout
+CPR-SAM3 is a training-free framework for remote-sensing open-vocabulary
+semantic segmentation. It recovers alternative labels from SAM3 outputs and
+uses frozen DINOv3 features to reconcile conflicting predictions. Both
+foundation models remain frozen; no ground-truth masks are used to build the
+prototype bank or predict an image.
 
-```text
-cpr_sam3/
-  model.py             Fixed deployable result and prototype-bank validation
-  runtime.py           External dependencies and local paths
-  prototypes.py        Original image pooling and clustering helpers
-  research/            Preserved method implementation and its import closure
-configs/
-  *.json               Four benchmark profiles
-  prompt_banks/        Class prompts from the research implementation
-tools/
-  doctor.py            Check assets and dependencies without inference
-  build_prototypes.py  Build a bank from unlabeled RGB images
-  demo.py              Predict one image without annotations
-  eval.py              Evaluate baseline or CPR-SAM3
-  check_release.py     Check source hashes, imports and accidental private files
-tests/                 CPU-only unit tests
-docs/                  Data, reproducibility and third-party notes
-```
+[![CPR-SAM3 framework: candidate recovery, visual verification, and prediction reconciliation](assets/framework.png)](assets/framework.png)
 
-## Dependencies and Installation
+- **Complementary candidate recovery (CCR):** collect hypotheses from SAM3's semantic head, instance head, decoder layers, and an aligned view.
+- **Cross-foundation visual verification (CFVV):** assess candidate labels using DINOv3 class prototypes and neighborhood agreement.
+- **Reliability-constrained reconciliation (RCR):** combine cross-output support with visual evidence to obtain the final segmentation.
 
-Start from a working **SegEarth-OV3 + SAM3** CUDA environment. Do not reuse
-SCLIP's older PyTorch installation commands for SAM3. Follow the official
-[SAM3 installation instructions](https://github.com/facebookresearch/sam3)
-and the matching PyTorch/CUDA installation instructions for your machine.
-MMSegmentation's MMCV build must also match that environment. This repository
-does not claim that a new environment has been tested across all CUDA versions.
+## Results
 
-Obtain the external source trees yourself; they are not redistributed here:
+Semantic segmentation results (mIoU, %):
+
+| Method | Vaihingen | Potsdam | LoveDA | OpenEarthMap | Mean |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| SegEarth-OV3 | 60.76 | 57.85 | 47.37 | 44.10 | 52.52 |
+| **CPR-SAM3** | **62.93** | **60.15** | **49.59** | **47.23** | **54.98** |
+
+These are reported manuscript results, not fresh measurements from this
+release. See [reproducibility notes](docs/REPRODUCIBILITY.md) for the evaluation
+protocol and remaining validation work.
+
+<details>
+<summary>Qualitative comparisons on OpenEarthMap</summary>
+
+![OpenEarthMap comparisons from the manuscript](assets/qualitative.png)
+
+Examples from the manuscript, comparing SCLIP, ClearCLIP, ResCLIP,
+SegEarth-OV3, and CPR-SAM3. These are not outputs of a new release-validation run.
+
+</details>
+
+## Installation
+
+A CUDA GPU and a working **SAM3 + MMSegmentation** environment are required.
+Install [SAM3](https://github.com/facebookresearch/sam3) and a compatible
+PyTorch / MMCV / MMSegmentation stack following their official instructions.
+Then clone this repository and its external dependencies:
 
 ```bash
+git clone https://github.com/Libai247/CPR-SAM3.git
+cd CPR-SAM3
 git clone https://github.com/earth-insights/SegEarth-OV-3.git third_party/SegEarth-OV-3
 git clone https://github.com/facebookresearch/dinov3.git third_party/dinov3
 python -m pip install -r requirements.txt
 ```
 
-Install SAM3 according to its official instructions. This code uses the
-`Sam3Processor` image API and accesses decoder tensors; later SAM3 API changes
-can break compatibility. Preserve the versions from your successful experiment
-environment. The baseline's content hash is checked at startup; details are in
-[REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md).
-
-## Checkpoints and Paths
-
-Obtain the original SAM3 checkpoint through its official distribution, and
-the **DINOv3 ViT-L/16 LVD-1689M** checkpoint through the
-[official DINOv3 repository](https://github.com/facebookresearch/dinov3).
-Accept any required terms yourself. SAT-493M weights are not interchangeable
-with the LVD configuration in this release. No weights or tokens are bundled
-or automatically downloaded.
-
-Copy `paths.example.json` to `paths.json` and edit its five paths. Relative
-paths are resolved relative to that JSON file, not the shell's working directory.
-`sam3_bpe` must point to the actual `bpe_simple_vocab_16e6.txt.gz` asset in your
-SAM3 installation or checkout; the example is only a conventional location.
+Download the **SAM3** and **DINOv3 ViT-L/16 LVD-1689M** checkpoints from their
+official repositories. Copy [paths.example.json](paths.example.json) to
+`paths.json` and set the two source directories, two checkpoint paths, and SAM3
+tokenizer path. Paths are relative to the JSON file. Weights are not bundled.
 
 ```bash
+cp paths.example.json paths.json
+# Edit paths.json to match your local files.
 python tools/doctor.py --paths paths.json
 ```
 
-## Datasets
+The dependency list is not a tested CUDA environment lockfile. See
+[validation status](docs/VALIDATION.md) and [compatibility notes](docs/REPRODUCIBILITY.md).
 
-Prepare Vaihingen, Potsdam, LoveDA and OpenEarthMap using
-[DATASETS.md](docs/DATASETS.md). Dataset images and labels remain external.
-The profiles reuse the original upstream data layout, class mapping,
-background handling and sliding-window configuration.
+## Usage
 
-## Build a Prototype Bank
+Prepare the datasets using [Data Preparation](docs/DATASETS.md). Run the
+following commands from the repository root.
 
-Bank construction reads only RGB reference images and SAM3 outputs, not labels:
+### 1. Build the Prototype Bank
 
-```bash
-python tools/build_prototypes.py --paths paths.json --dataset vaihingen --images data/Vaihingen/img_dir/val --output artifacts/vaihingen_lvd.pt
-```
-
-By default, at most 64 images are sampled uniformly from a sorted image list;
-up to three prototypes per class and 96 seed tokens per image/class are used.
-The sidecar JSON records the selected relative image names, image hashes and
-sampling settings. To reuse a known reference split, pass
-`--image-list splits/vaihingen_reference.txt`, with one relative RGB filename
-per line. Do not silently substitute a different reference set and call the
-result an exact reproduction.
-
-Using reference images from the evaluation partition is **unlabeled target-domain
-adaptation / transductive inference**, not an image-disjoint evaluation. For an
-image-disjoint experiment, use reference images from a separate source and
-verify the split before evaluating. See the protocol notes for limitations.
-
-## Single-Image Inference
+Build a bank from unlabeled reference images for the selected dataset:
 
 ```bash
-python tools/demo.py --paths paths.json --dataset vaihingen --image data/Vaihingen/img_dir/val/IMAGE.png --bank artifacts/vaihingen_lvd.pt --output-dir work_dirs/demo
+python build_prototypes.py --dataset vaihingen \
+  --images data/Vaihingen/img_dir/val \
+  --output artifacts/vaihingen_lvd.pt
 ```
 
-Replace `IMAGE.png` with a real prepared image. Outputs are an indexed label
-PNG, a color PNG and a run-environment record. No annotation path is required.
-Add `--baseline` and omit `--bank` to inspect the SegEarth-OV3 reference.
+The default uses at most 64 reference images and up to three prototypes per
+class. A JSON sidecar records the selected images and settings. Using images
+from the evaluation partition is a **transductive** setting; use a separate
+reference split for image-disjoint evaluation.
 
-## Evaluation
+### 2. Single-Image Inference
 
 ```bash
-python tools/eval.py --paths paths.json --dataset vaihingen --data-root data/Vaihingen --baseline --work-dir work_dirs/vaihingen_baseline
-python tools/eval.py --paths paths.json --dataset vaihingen --data-root data/Vaihingen --bank artifacts/vaihingen_lvd.pt --work-dir work_dirs/vaihingen_cpr
+python demo.py --dataset vaihingen \
+  --image data/Vaihingen/img_dir/val/IMAGE.png \
+  --bank artifacts/vaihingen_lvd.pt --output-dir work_dirs/demo
 ```
 
-The other profiles use the same commands:
+Replace `IMAGE.png` with an existing image. The output directory contains
+`prediction.png` (class IDs), `prediction_rgb.png`, and `run.json`.
 
-| `--dataset` | `--data-root` example | Bank example |
-| --- | --- | --- |
-| `potsdam` | `data/Potsdam` | `artifacts/potsdam_lvd.pt` |
-| `loveda` | `data/LoveDA` | `artifacts/loveda_lvd.pt` |
-| `openearthmap` | `data/OpenEarthMap` | `artifacts/openearthmap_lvd.pt` |
-
-Create each bank using that profile and its corresponding RGB reference folder.
-Run from this repository root. `metrics.json`, MMEngine logs and `run.json`
-are saved under `--work-dir`. The default worker count is zero for portability;
-use `--workers 4` only after a successful smoke run. This release exposes one
-fixed output per profile; it never chooses the best result after reading IoU.
-
-## Reproduction Checks
+### 3. Evaluation
 
 ```bash
-python -m unittest discover -s tests -v
-python tools/check_release.py
+python eval.py --dataset vaihingen --data-root data/Vaihingen \
+  --bank artifacts/vaihingen_lvd.pt --work-dir work_dirs/vaihingen
 ```
 
-These are CPU/source checks, not evidence of CUDA or benchmark parity.
-Manuscript reference numbers are in
-[reference_metrics.json](results/reference_metrics.json), clearly marked as
-reported values rather than outputs generated by this release.
+To evaluate the SegEarth-OV3 baseline, replace `--bank ...` with `--baseline`.
+Results and logs are saved under `--work-dir`. Use the same data and class
+mapping for both methods.
 
-## Citation and Acknowledgements
+| `--dataset` | Prepared dataset root | RGB reference directory |
+| :--- | :--- | :--- |
+| `vaihingen` | `data/Vaihingen` | `img_dir/val` |
+| `potsdam` | `data/Potsdam` | `img_dir/val` |
+| `loveda` | `data/LoveDA` | `img_dir/val` |
+| `openearthmap` | `data/OpenEarthMap` | `val/images` |
 
-The manuscript is not marked as accepted or published here. Citation metadata
-is provided in [CITATION.cff](CITATION.cff).
+Build a separate bank for each dataset. The profiles and text prompts are in
+[configs](configs). All commands accept `--paths` and `--help`.
 
-This work builds on
-[SegEarth-OV3](https://github.com/earth-insights/SegEarth-OV-3),
+## Citation
+
+```bibtex
+@misc{chen2026cprsam3,
+  title  = {CPR-SAM3: Complementary Prediction Reconciliation for Training-Free Remote-Sensing Open-Vocabulary Semantic Segmentation},
+  author = {Chen, Huasong and Li, Wenting and Meng, Chuihao and Nie, Tianzuo and Zhang, Yongjun},
+  year   = {2026},
+  note   = {Unpublished manuscript},
+  url    = {https://github.com/Libai247/CPR-SAM3}
+}
+```
+
+## Acknowledgements
+
+This implementation builds on [SegEarth-OV3](https://github.com/earth-insights/SegEarth-OV-3),
 [SAM3](https://github.com/facebookresearch/sam3),
-[DINOv3](https://github.com/facebookresearch/dinov3) and
+[DINOv3](https://github.com/facebookresearch/dinov3), and
 [MMSegmentation](https://github.com/open-mmlab/mmsegmentation).
-Related release layouts were inspected in
-[SegEarth-OV](https://github.com/likyoo/SegEarth-OV),
-[SCLIP](https://github.com/wangf3014/SCLIP),
-[ProxyCLIP](https://github.com/mc-lan/ProxyCLIP) and
-[CorrCLIP](https://github.com/zdk258/CorrCLIP); their README text is not copied.
-See [third-party notes](docs/THIRD_PARTY.md).
-
-No project-wide `LICENSE` is added to this draft. Public source availability
-alone does not grant unrestricted reuse rights; the authors can add an explicit
-license after confirming rights. Third-party dependencies and checkpoints
-retain their own applicable terms.
+We thank their authors for sharing their work. See [third-party notes](docs/THIRD_PARTY.md)
+for source and asset information.

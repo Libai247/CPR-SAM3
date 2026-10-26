@@ -23,7 +23,8 @@ def main():
         rel = path.relative_to(ROOT)
         if not path.is_file() or set(rel.parts) & EXCLUDED or path.name == "paths.json":
             continue
-        if path.suffix in EXTENSIONS or path.name == ".gitignore":
+        is_figure = rel.parts[0] == "assets" and path.suffix.lower() in {".png", ".jpg", ".jpeg"}
+        if path.suffix in EXTENSIONS or path.name == ".gitignore" or is_figure:
             files.append(path)
     if output.exists():
         parser.error("Output already exists; use a new archive name")

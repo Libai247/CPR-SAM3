@@ -5,10 +5,12 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+import subprocess
 import tempfile
 import unittest
 from unittest import mock
 import types
+import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,6 +32,33 @@ def research_method(relative, class_name, method_name):
 
 
 class ReleaseTests(unittest.TestCase):
+    def test_root_entry_points_work_outside_repository(self):
+        with tempfile.TemporaryDirectory() as directory:
+            for name in ("demo.py", "eval.py", "build_prototypes.py"):
+                result = subprocess.run(
+                    [sys.executable, str(ROOT / name), "--help"],
+                    cwd=directory, capture_output=True, text=True, timeout=30,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn("--dataset", result.stdout)
+                self.assertIn("--paths", result.stdout)
+
+    def test_source_archive_includes_readme_figures_and_entry_points(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "release.zip"
+            result = subprocess.run(
+                [sys.executable, str(ROOT / "tools/make_archive.py"), "--output", str(output)],
+                capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            with zipfile.ZipFile(output) as archive:
+                names = set(archive.namelist())
+                for name in ("assets/framework.png", "assets/qualitative.png", "demo.py", "eval.py", "build_prototypes.py"):
+                    self.assertIn("CPR-SAM3/" + name, names)
+                self.assertNotIn("CPR-SAM3/paths.json", names)
+                self.assertFalse(any("/.git/" in name for name in names))
+                self.assertIsNone(archive.testzip())
+
     def test_profiles_and_prompts(self):
         expected = dict(vaihingen=6, potsdam=6, loveda=7, openearthmap=9)
         for name, count in expected.items():
