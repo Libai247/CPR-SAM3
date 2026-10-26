@@ -1,0 +1,6 @@
+{
+  "upstream_config": "configs/cfg_potsdam.py",
+  "prompt_bank": "potsdam.json",
+  "output_family": "presence_vote",
+  "reported_evaluation_images": 2016
+}

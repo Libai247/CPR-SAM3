@@ -1,0 +1,6 @@
+{
+  "upstream_config": "configs/cfg_loveda.py",
+  "prompt_bank": "loveda.json",
+  "output_family": "schema_route",
+  "reported_evaluation_images": 1669
+}

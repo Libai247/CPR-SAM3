@@ -1,0 +1,7 @@
+{
+  "segearthov3_repo": "third_party/SegEarth-OV-3",
+  "dinov3_repo": "third_party/dinov3",
+  "sam3_checkpoint": "checkpoints/sam3.pt",
+  "dinov3_checkpoint": "checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth",
+  "sam3_bpe": "third_party/SegEarth-OV-3/sam3/assets/bpe_simple_vocab_16e6.txt.gz"
+}

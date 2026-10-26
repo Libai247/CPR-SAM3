@@ -1,0 +1,6 @@
+{
+  "upstream_config": "configs/cfg_vaihingen.py",
+  "prompt_bank": "vaihingen.json",
+  "output_family": "direct_vote",
+  "reported_evaluation_images": 398
+}

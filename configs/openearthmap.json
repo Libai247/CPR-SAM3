@@ -1,0 +1,6 @@
+{
+  "upstream_config": "configs/cfg_openearthmap.py",
+  "prompt_bank": "openearthmap.json",
+  "output_family": "direct_raw",
+  "reported_evaluation_images": 384
+}

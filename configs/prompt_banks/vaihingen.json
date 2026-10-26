@@ -1,0 +1,59 @@
+{
+  "dataset": "vaihingen",
+  "classes": [
+    {
+      "name": "road",
+      "prompts": [
+        "road",
+        "paved road",
+        "impervious surface",
+        "street viewed from above"
+      ]
+    },
+    {
+      "name": "building",
+      "prompts": [
+        "building",
+        "building rooftop",
+        "roofed structure",
+        "building viewed from above"
+      ]
+    },
+    {
+      "name": "grass",
+      "prompts": [
+        "grass",
+        "low vegetation",
+        "grassy area",
+        "lawn viewed from above"
+      ]
+    },
+    {
+      "name": "tree",
+      "prompts": [
+        "tree",
+        "tree canopy",
+        "wooded vegetation",
+        "trees viewed from above"
+      ]
+    },
+    {
+      "name": "car",
+      "prompts": [
+        "car",
+        "small vehicle",
+        "parked car",
+        "automobile viewed from above"
+      ]
+    },
+    {
+      "name": "clutter",
+      "prompts": [
+        "clutter",
+        "urban clutter",
+        "miscellaneous object",
+        "unclassified urban area"
+      ]
+    }
+  ]
+}

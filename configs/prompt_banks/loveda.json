@@ -1,0 +1,68 @@
+{
+  "dataset": "loveda",
+  "classes": [
+    {
+      "name": "background",
+      "prompts": [
+        "background",
+        "unlabeled background",
+        "other land cover",
+        "unclassified area"
+      ]
+    },
+    {
+      "name": "building",
+      "prompts": [
+        "building",
+        "house",
+        "building rooftop",
+        "roofed structure viewed from above"
+      ]
+    },
+    {
+      "name": "road",
+      "prompts": [
+        "road",
+        "paved road",
+        "street network",
+        "transportation road viewed from above"
+      ]
+    },
+    {
+      "name": "water",
+      "prompts": [
+        "water",
+        "water body",
+        "river",
+        "lake viewed from above"
+      ]
+    },
+    {
+      "name": "barren",
+      "prompts": [
+        "barren",
+        "bareland",
+        "soil",
+        "exposed bare ground"
+      ]
+    },
+    {
+      "name": "forest",
+      "prompts": [
+        "forest",
+        "tree",
+        "dense tree canopy",
+        "woodland viewed from above"
+      ]
+    },
+    {
+      "name": "agricultural",
+      "prompts": [
+        "agricultural",
+        "cropland",
+        "farmland",
+        "cultivated field viewed from above"
+      ]
+    }
+  ]
+}

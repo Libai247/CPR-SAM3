@@ -1,0 +1,118 @@
+{
+  "assembled": "2026-10-26",
+  "external_baseline": {
+    "repository": "https://github.com/earth-insights/SegEarth-OV-3",
+    "file": "segearthov3_segmentor.py",
+    "normalized_sha256": "f19946915e517ada93e074667de5c6e5487ca074c3a28f6a355f5f7cd99ed15b",
+    "redistributed": false
+  },
+  "transformations": [
+    "ours namespace -> cpr_sam3.research",
+    "private default asset paths -> relative paths",
+    "empty package initializers exclude unrelated evaluation/oracle imports",
+    "prototype helper functions extracted without algorithm changes"
+  ],
+  "sources": [
+    {
+      "source": "ours/unlabeled_prototype_alignment/scripts/build_prototype_bank.py",
+      "destination": "cpr_sam3/prototypes.py",
+      "functions_only": true,
+      "original_normalized_sha256": "d41e192c2d4d1ea814641ddc6e331ddd5d130f0549acdf8865ffba8262be7042",
+      "packaged_normalized_sha256": "8a8307ab55d90043b753346584e955e6209b411c5df19e6f1733737fb3243f4a"
+    },
+    {
+      "source": "ours/adaptive_branch_balance_sam3/segmentor.py",
+      "destination": "cpr_sam3/research/adaptive_branch_balance_sam3/segmentor.py",
+      "original_normalized_sha256": "2cd5cd0726c0b59844ffcab607bc00cfdd0a4b3fe182ce59cca4b53b4ade79b5",
+      "packaged_normalized_sha256": "0bc8d95f93f93f2e44a1f7f75371243dd5948ab2839094e164430d8702e4a173"
+    },
+    {
+      "source": "ours/branch_p3c_sam3/segmentor.py",
+      "destination": "cpr_sam3/research/branch_p3c_sam3/segmentor.py",
+      "original_normalized_sha256": "3d2b4f7565c6d9c0b34959d107d3e719f7267c405b7b7d63370167ca27409bcf",
+      "packaged_normalized_sha256": "bf4f72fb25bf8721a239e53af57c234a660e47a17c97e88c8f38865fd0e0243f"
+    },
+    {
+      "source": "ours/concept_prompt_experts/segmentor.py",
+      "destination": "cpr_sam3/research/concept_prompt_experts/segmentor.py",
+      "original_normalized_sha256": "cdf20ef71e4a013e1d7f081ecc6a5bbf0bcf3f6e364f631990bc90c3736489b6",
+      "packaged_normalized_sha256": "cdf20ef71e4a013e1d7f081ecc6a5bbf0bcf3f6e364f631990bc90c3736489b6"
+    },
+    {
+      "source": "ours/cross_expert_trajectory_consensus/segmentor.py",
+      "destination": "cpr_sam3/research/cross_expert_trajectory_consensus/segmentor.py",
+      "original_normalized_sha256": "5b24a77f21317569d46f2df221fffd257f221cd834c9ac8376e031c8b85abc2f",
+      "packaged_normalized_sha256": "72b5aa843a4643515cabd6148eb01eabfecfeee52255251a8d2d647d4d61165c"
+    },
+    {
+      "source": "ours/cross_foundation_candidate_verifier/segmentor.py",
+      "destination": "cpr_sam3/research/cross_foundation_candidate_verifier/segmentor.py",
+      "original_normalized_sha256": "96ac26fabb720bfca5a7e18bde3750e950a197afebd6b5954411aa8342f1c413",
+      "packaged_normalized_sha256": "ac4e33482604cc21059cb5e8cd3f1910d51a9a5d817a0c732f55d7280e7b2fb5"
+    },
+    {
+      "source": "ours/hierarchical_equivariance_response_sam3/segmentor.py",
+      "destination": "cpr_sam3/research/hierarchical_equivariance_response_sam3/segmentor.py",
+      "original_normalized_sha256": "cbaba4d674d82967267aba6a8047a0100939d3d22026c4214ec17ea117f7763e",
+      "packaged_normalized_sha256": "a939cfc876912ccee14c911b508bd961121ff7fd045cfb370a0bad6977163024"
+    },
+    {
+      "source": "ours/multi_axis_consensus_sam3/segmentor.py",
+      "destination": "cpr_sam3/research/multi_axis_consensus_sam3/segmentor.py",
+      "original_normalized_sha256": "1dd2529b67b6d8caadb7d86d9983de49aedaf760a71e0041d7045b0b9941ae04",
+      "packaged_normalized_sha256": "a04e75f2b77d2c7d2852df751500e116e782cb8d73ec29f2adb4f9f7362638ca"
+    },
+    {
+      "source": "ours/p3c_sam3/segmentor.py",
+      "destination": "cpr_sam3/research/p3c_sam3/segmentor.py",
+      "original_normalized_sha256": "8593e72b488fe722eaa9fd60f5e3c0779becd73037d2dec1084ae0c8b89ba3a5",
+      "packaged_normalized_sha256": "8593e72b488fe722eaa9fd60f5e3c0779becd73037d2dec1084ae0c8b89ba3a5"
+    },
+    {
+      "source": "ours/sam3_arch_probe/probe.py",
+      "destination": "cpr_sam3/research/sam3_arch_probe/probe.py",
+      "original_normalized_sha256": "c59f0883836e1323df5f25f53376e5039b14b740bb1156f9e9e99372fc69c02e",
+      "packaged_normalized_sha256": "c59f0883836e1323df5f25f53376e5039b14b740bb1156f9e9e99372fc69c02e"
+    },
+    {
+      "source": "ours/satellite_affinity_sam3/dino.py",
+      "destination": "cpr_sam3/research/satellite_affinity_sam3/dino.py",
+      "original_normalized_sha256": "69c89071706ca802319e336fc1a40791723bb5b29d85346c5c5c26aa13a2c677",
+      "packaged_normalized_sha256": "08eef812334a6000fca31e1ec5b35dec5a8f186b42b97f035e6b83bb1bfd02c4"
+    },
+    {
+      "source": "ours/temp_consensus_p3c_sam3/segmentor.py",
+      "destination": "cpr_sam3/research/temp_consensus_p3c_sam3/segmentor.py",
+      "original_normalized_sha256": "c61ce0fdbc6a204ee03ce437db9d5dd6605d4c08c6dddaee3eaf15ee8be09d68",
+      "packaged_normalized_sha256": "6c988a647d51cadf1a7671325c0bc8824527e0ae400b4d00fc157fef54a36db9"
+    },
+    {
+      "source": "ours/text_geometry_prompt_calibration/segmentor.py",
+      "destination": "cpr_sam3/research/text_geometry_prompt_calibration/segmentor.py",
+      "original_normalized_sha256": "412508b422feef28044b938e99af34416537fd72f67cd7fca61f6a58178e509c",
+      "packaged_normalized_sha256": "e9a62d08f7e86fae17a67f59bb4a6b05d8379b60fecf2565813ee62df9ee0f31"
+    },
+    {
+      "source": "ours/trajectory_cross_foundation_selector/segmentor.py",
+      "destination": "cpr_sam3/research/trajectory_cross_foundation_selector/segmentor.py",
+      "original_normalized_sha256": "ad71c62878f075c34ae8d0887f9cf35df15e85284550b1bde270575eddf11d49",
+      "packaged_normalized_sha256": "7a3a576b0aeedf895dcf3692fe799f705ac54c9aeb72aca8f651a358d22926ce"
+    },
+    {
+      "source": "ours/unified_cross_foundation_trajectory/segmentor.py",
+      "destination": "cpr_sam3/research/unified_cross_foundation_trajectory/segmentor.py",
+      "original_normalized_sha256": "a220f54b642a676f8cd35e4b556555f9fdaf3bae77a92542fc689ac576249b7d",
+      "packaged_normalized_sha256": "a676ea35bc1707e6bfd777bec6eea7b57c3bae6130796ca220d4c5f403680509"
+    },
+    {
+      "source": "ours/unified_text_response_sam3/segmentor.py",
+      "destination": "cpr_sam3/research/unified_text_response_sam3/segmentor.py",
+      "original_normalized_sha256": "aebf66a014b998efd40f84c6688250eeef4fd021487118e1079762302448cb97",
+      "packaged_normalized_sha256": "d7cf30039009e494003ec69caf5cc13843396868a1152eecfdf0c0e8be26b3b5"
+    }
+  ],
+  "validation": {
+    "gpu_inference": false,
+    "manuscript_result_parity": false
+  }
+}

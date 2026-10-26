@@ -1,0 +1,8 @@
+# Install the CUDA-compatible SAM3 / SegEarth-OV3 environment first.
+# These ranges describe the wrapper API, not a validated CUDA environment lock.
+numpy>=1.24,<3
+Pillow>=10
+mmengine>=0.10.7,<1
+mmsegmentation==1.2.2
+# Install mmcv>=2.0.0rc4,<2.2.0 separately for your PyTorch/CUDA combination.
+# SAM3, DINOv3 and torch/torchvision are external dependencies; see README.md.

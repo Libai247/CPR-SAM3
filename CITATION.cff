@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "Please cite the CPR-SAM3 manuscript when using this research implementation."
+type: software
+title: "CPR-SAM3: Complementary Prediction Reconciliation for Training-Free Remote-Sensing Open-Vocabulary Semantic Segmentation"
+version: 0.1.0
+authors:
+  - family-names: Chen
+    given-names: Huasong
+  - family-names: Li
+    given-names: Wenting
+  - family-names: Meng
+    given-names: Chuihao
+  - family-names: Nie
+    given-names: Tianzuo
+  - family-names: Zhang
+    given-names: Yongjun
+abstract: "Research implementation of training-free candidate recovery and cross-foundation prediction reconciliation for remote-sensing open-vocabulary semantic segmentation."

@@ -1,0 +1,86 @@
+{
+  "dataset": "openearthmap",
+  "classes": [
+    {
+      "name": "background",
+      "prompts": [
+        "background",
+        "unlabeled background",
+        "other land cover",
+        "unclassified area"
+      ]
+    },
+    {
+      "name": "bareland",
+      "prompts": [
+        "bareland",
+        "barren",
+        "bare soil",
+        "barren land viewed from above"
+      ]
+    },
+    {
+      "name": "grass",
+      "prompts": [
+        "grass",
+        "low vegetation",
+        "grassy area",
+        "grass viewed from above"
+      ]
+    },
+    {
+      "name": "pavement",
+      "prompts": [
+        "pavement",
+        "paved surface",
+        "impervious pavement",
+        "pavement viewed from above"
+      ]
+    },
+    {
+      "name": "road",
+      "prompts": [
+        "road",
+        "paved road",
+        "street",
+        "road viewed from above"
+      ]
+    },
+    {
+      "name": "tree",
+      "prompts": [
+        "tree",
+        "forest",
+        "tree canopy",
+        "forest viewed from above"
+      ]
+    },
+    {
+      "name": "water",
+      "prompts": [
+        "water",
+        "river",
+        "water body",
+        "surface water viewed from above"
+      ]
+    },
+    {
+      "name": "cropland",
+      "prompts": [
+        "cropland",
+        "farmland",
+        "agricultural field",
+        "cropland viewed from above"
+      ]
+    },
+    {
+      "name": "building",
+      "prompts": [
+        "building",
+        "roof",
+        "house",
+        "building viewed from above"
+      ]
+    }
+  ]
+}

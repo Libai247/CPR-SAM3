@@ -1,0 +1,18 @@
+{
+  "status": "manuscript-reported reference values, not verified outputs of this source release",
+  "metric": "mIoU percent",
+  "baseline": {
+    "vaihingen": 60.76,
+    "potsdam": 57.85,
+    "loveda": 47.37,
+    "openearthmap": 44.10
+  },
+  "cpr_sam3": {
+    "vaihingen": 62.93,
+    "potsdam": 60.15,
+    "loveda": 49.59,
+    "openearthmap": 47.23
+  },
+  "source_release_gpu_validation": false,
+  "source_release_manuscript_parity": false
+}
