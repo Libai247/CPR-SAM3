@@ -8,8 +8,8 @@ Download datasets from their original providers and follow their terms:
 
 Use the preprocessing instructions in
 [SegEarth-OV](https://github.com/likyoo/SegEarth-OV/blob/main/dataset_prepare.md)
-and the dataset configs in your external SegEarth-OV3 checkout. This release
-does not invent a new crop split or redistribute benchmark imagery.
+and the dataset configs in the pinned SegEarth-OV3 checkout. The profiles use
+those dataset classes and prepared splits; dataset files are not included.
 
 ## Expected Prepared Layout
 
@@ -31,7 +31,7 @@ data/
 
 Image and annotation suffixes must match the external MMSeg dataset classes.
 In particular, the external OpenEarthMap class defaults to `.tif` images and
-`.tif` label masks. Do not silently rename files without checking pair matching.
+`.tif` label masks. Image and label basenames must match.
 Labels must be class-index masks, not RGB palette images.
 
 ## Taxonomy and Ignore Labels
@@ -42,21 +42,20 @@ Labels must be class-index masks, not RGB palette images.
 - OpenEarthMap: the research config uses nine entries, including index-zero
   background, and `reduce_zero_label=False`. The default metric ignores 255,
   not automatically zero. This configured evaluation differs from simply
-  averaging eight foreground classes. State the convention when reporting it.
+  averaging eight foreground classes.
 
-Never change the evaluated class set to match a target score. For fairness,
-use exactly the same prepared data, split and class/ignore mapping for baseline
-and full-method evaluation.
+Baseline and CPR-SAM3 evaluations must use the same prepared data, split,
+class set, and ignore-label mapping.
 
 The manuscript reports 398 / 2016 / 1669 / 384 evaluation images for Vaihingen /
-Potsdam / LoveDA / OpenEarthMap. Counts are sanity checks, not sufficient proof
-that two splits are identical. The original reference-image manifests and exact
-crop preprocessing lineage must be checked before claiming manuscript parity.
+Potsdam / LoveDA / OpenEarthMap. Matching image counts alone does not establish
+an identical split. Exact reproduction also requires the original crop
+preprocessing and reference-image manifests, which are not bundled here.
 
 ## Reference Images
 
 The prototype builder emits a sidecar JSON with selected RGB filenames and
-SHA256 hashes. Keep that file with your experiment outputs. Do not publish
-machine-specific absolute paths, private images, or data without redistribution
-permission. A reference folder inside the evaluation partition must be disclosed
-as transductive, even though no labels are read during bank construction.
+SHA256 hashes. Keep that file with the experiment outputs. Using reference
+images from the evaluation partition is transductive inference, even though
+no labels are read during bank construction. Image-disjoint evaluation needs
+a separate reference source and an overlap check.

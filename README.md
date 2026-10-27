@@ -9,66 +9,75 @@ Tianzuo Nie<sup>1</sup>, Yongjun Zhang<sup>1</sup>
 </p>
 <p><sup>1</sup>Guizhou University &nbsp; <sup>2</sup>Guizhou University of Commerce</p>
 
-[Overview](#overview) | [Results](#results) | [Installation](#installation) | [Usage](#usage) | [Citation](#citation)
+[Overview](#overview) | [Results](#results) | [Installation](#installation) | [Datasets](#datasets) | [Usage](#usage) | [Citation](#citation)
 
 </div>
 
 ## Overview
 
-CPR-SAM3 is a training-free framework for remote-sensing open-vocabulary
-semantic segmentation. It recovers alternative labels from SAM3 outputs and
-uses frozen DINOv3 features to reconcile conflicting predictions. Both
-foundation models remain frozen; no ground-truth masks are used to build the
-prototype bank or predict an image.
+Code for **CPR-SAM3**, a training-free method for remote-sensing open-vocabulary
+semantic segmentation. We collect candidate labels from SAM3's heads, decoder
+layers, and an aligned view, then use DINOv3 appearance prototypes to resolve
+conflicting predictions. Both models are frozen. The prototypes are built from
+unlabeled reference images.
 
 [![CPR-SAM3 framework: candidate recovery, visual verification, and prediction reconciliation](assets/framework.png)](assets/framework.png)
 
-- **Complementary candidate recovery (CCR):** collect hypotheses from SAM3's semantic head, instance head, decoder layers, and an aligned view.
-- **Cross-foundation visual verification (CFVV):** assess candidate labels using DINOv3 class prototypes and neighborhood agreement.
-- **Reliability-constrained reconciliation (RCR):** combine cross-output support with visual evidence to obtain the final segmentation.
+The method has three stages: complementary candidate recovery (CCR),
+cross-foundation visual verification (CFVV), and reliability-constrained
+reconciliation (RCR).
 
 ## Results
 
-Semantic segmentation results (mIoU, %):
+Semantic segmentation results (mIoU, %). The baseline is SegEarth-OV3.
 
-| Method | Vaihingen | Potsdam | LoveDA | OpenEarthMap | Mean |
-| :--- | ---: | ---: | ---: | ---: | ---: |
-| SegEarth-OV3 | 60.76 | 57.85 | 47.37 | 44.10 | 52.52 |
-| **CPR-SAM3** | **62.93** | **60.15** | **49.59** | **47.23** | **54.98** |
+| Dataset | Baseline | CPR-SAM3 |
+| :--- | ---: | ---: |
+| Vaihingen | 60.76 | **62.93** |
+| Potsdam | 57.85 | **60.15** |
+| LoveDA | 47.37 | **49.59** |
+| OpenEarthMap | 44.10 | **47.23** |
+| Mean | 52.52 | **54.98** |
 
-These are reported manuscript results, not fresh measurements from this
-release. See [reproducibility notes](docs/REPRODUCIBILITY.md) for the evaluation
-protocol and remaining validation work.
+Results and figures are from the manuscript. This release has passed CPU tests;
+end-to-end GPU reproduction is pending. See [implementation and evaluation notes](docs/REPRODUCIBILITY.md).
 
 <details>
 <summary>Qualitative comparisons on OpenEarthMap</summary>
 
 ![OpenEarthMap comparisons from the manuscript](assets/qualitative.png)
 
-Examples from the manuscript, comparing SCLIP, ClearCLIP, ResCLIP,
-SegEarth-OV3, and CPR-SAM3. These are not outputs of a new release-validation run.
+Comparison with SCLIP, ClearCLIP, ResCLIP, and SegEarth-OV3.
 
 </details>
 
 ## Installation
 
-A CUDA GPU and a working **SAM3 + MMSegmentation** environment are required.
-Install [SAM3](https://github.com/facebookresearch/sam3) and a compatible
-PyTorch / MMCV / MMSegmentation stack following their official instructions.
-Then clone this repository and its external dependencies:
+Use a CUDA environment with [SAM3](https://github.com/facebookresearch/sam3#installation)
+and [MMSegmentation](https://mmsegmentation.readthedocs.io/en/latest/get_started.html#installation)
+installed. MMCV must be built for the installed PyTorch/CUDA versions.
 
 ```bash
 git clone https://github.com/Libai247/CPR-SAM3.git
 cd CPR-SAM3
 git clone https://github.com/earth-insights/SegEarth-OV-3.git third_party/SegEarth-OV-3
+git -C third_party/SegEarth-OV-3 checkout 87e5cc18c8bc9c0b4713b975587281ac1c97c79a
 git clone https://github.com/facebookresearch/dinov3.git third_party/dinov3
 python -m pip install -r requirements.txt
 ```
 
-Download the **SAM3** and **DINOv3 ViT-L/16 LVD-1689M** checkpoints from their
-official repositories. Copy [paths.example.json](paths.example.json) to
-`paths.json` and set the two source directories, two checkpoint paths, and SAM3
-tokenizer path. Paths are relative to the JSON file. Weights are not bundled.
+The SegEarth-OV3 revision above matches the baseline source used by this adapter.
+Download the checkpoints separately:
+
+| Model | Checkpoint source |
+| :--- | :--- |
+| SAM3 (not SAM3.1) | [Official model repository](https://huggingface.co/facebook/sam3) |
+| DINOv3 ViT-L/16, LVD-1689M | [Official pretrained models](https://github.com/facebookresearch/dinov3#pretrained-models) |
+
+Copy [paths.example.json](paths.example.json) to `paths.json` and edit its five
+paths. `sam3_bpe` points to SAM3's `bpe_simple_vocab_16e6.txt.gz` tokenizer file.
+Relative paths are resolved from the JSON file. The DINOv3 SAT-493M checkpoint
+is a different model and is not used by these profiles.
 
 ```bash
 cp paths.example.json paths.json
@@ -76,13 +85,25 @@ cp paths.example.json paths.json
 python tools/doctor.py --paths paths.json
 ```
 
-The dependency list is not a tested CUDA environment lockfile. See
-[validation status](docs/VALIDATION.md) and [compatibility notes](docs/REPRODUCIBILITY.md).
+## Datasets
+
+We provide profiles for Vaihingen, Potsdam, LoveDA, and OpenEarthMap.
+Follow [Data Preparation](docs/DATASETS.md) for downloads, preprocessing, and
+label mappings.
+
+| `--dataset` | `--data-root` | RGB reference directory |
+| :--- | :--- | :--- |
+| `vaihingen` | `data/Vaihingen` | `img_dir/val` |
+| `potsdam` | `data/Potsdam` | `img_dir/val` |
+| `loveda` | `data/LoveDA` | `img_dir/val` |
+| `openearthmap` | `data/OpenEarthMap` | `val/images` |
+
+Reference directories in the last column are relative to the dataset root.
 
 ## Usage
 
-Prepare the datasets using [Data Preparation](docs/DATASETS.md). Run the
-following commands from the repository root.
+Run the commands below from the repository root. They use Vaihingen as an
+example; each dataset needs its own prototype bank.
 
 ### 1. Build the Prototype Bank
 
@@ -94,10 +115,10 @@ python build_prototypes.py --dataset vaihingen \
   --output artifacts/vaihingen_lvd.pt
 ```
 
-The default uses at most 64 reference images and up to three prototypes per
-class. A JSON sidecar records the selected images and settings. Using images
-from the evaluation partition is a **transductive** setting; use a separate
-reference split for image-disjoint evaluation.
+The default uses at most 64 images and up to three prototypes per class.
+The bank's JSON sidecar records the selected images and settings. This example
+uses the unlabeled evaluation images, a **transductive** setting. Use a separate
+reference split for image-disjoint evaluation. No annotation masks are read.
 
 ### 2. Single-Image Inference
 
@@ -121,15 +142,9 @@ To evaluate the SegEarth-OV3 baseline, replace `--bank ...` with `--baseline`.
 Results and logs are saved under `--work-dir`. Use the same data and class
 mapping for both methods.
 
-| `--dataset` | Prepared dataset root | RGB reference directory |
-| :--- | :--- | :--- |
-| `vaihingen` | `data/Vaihingen` | `img_dir/val` |
-| `potsdam` | `data/Potsdam` | `img_dir/val` |
-| `loveda` | `data/LoveDA` | `img_dir/val` |
-| `openearthmap` | `data/OpenEarthMap` | `val/images` |
-
-Build a separate bank for each dataset. The profiles and text prompts are in
-[configs](configs). All commands accept `--paths` and `--help`.
+The model entry point is [cpr_sam3/model.py](cpr_sam3/model.py); benchmark
+profiles and text prompts are in [configs](configs). All three commands accept
+`--paths` and `--help`.
 
 ## Citation
 

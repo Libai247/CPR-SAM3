@@ -2,6 +2,7 @@
   "assembled": "2026-10-26",
   "external_baseline": {
     "repository": "https://github.com/earth-insights/SegEarth-OV-3",
+    "commit": "87e5cc18c8bc9c0b4713b975587281ac1c97c79a",
     "file": "segearthov3_segmentor.py",
     "normalized_sha256": "f19946915e517ada93e074667de5c6e5487ca074c3a28f6a355f5f7cd99ed15b",
     "redistributed": false

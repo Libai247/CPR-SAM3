@@ -14,31 +14,26 @@
   https://github.com/open-mmlab/mmsegmentation
   and their original distributions supply framework components.
 
-Consult each upstream source and asset's current terms. Public availability
-does not automatically authorize relicensing or redistribution. No project-wide
-license is imposed on these dependencies by this release.
+Each dependency retains its own license and asset terms. This repository does
+not relicense or redistribute the external source trees.
 
 ## Related Research
 
-The original baseline and associated pipelines acknowledge SCLIP and other
-foundation-model work. Preserve those upstream acknowledgements when using
-their code. The layout of this release was informed by the official SCLIP,
-SegEarth-OV, SegEarth-OV3, ProxyCLIP and CorrCLIP repositories. Layout inspection
-does not imply their authors endorse this implementation.
+SegEarth-OV3 builds on SAM3 and SCLIP. See its original repository for the
+upstream acknowledgements and references.
 
 ## Weights and Data
 
 No model checkpoint, tokenizer asset, standalone dataset sample or access
-token is included. Users obtain each asset directly through its official
-provider and accept the associated terms. Do not upload access tokens or
-restricted files to GitHub, Git LFS or a public release attachment.
+token is included. Download weights and data from the original providers under
+their applicable terms. Keep local paths, credentials, and restricted assets
+out of public commits.
 
 ## Manuscript Figures
 
 `assets/framework.png` and `assets/qualitative.png` are the authors' existing
 manuscript Figures 3 and 5, respectively, copied without changing the depicted
-method or predictions. They are illustrative manuscript results, not outputs
-of a new validation run. The figures contain benchmark image crops; the
+method or predictions. The figures contain benchmark image crops; the
 underlying imagery remains subject to the original dataset terms:
 [ISPRS](https://www.isprs.org/resources/datasets/benchmarks/UrbanSemLab/semantic-labeling.aspx)
 and [OpenEarthMap](https://www.open-earth-map.org/).

@@ -1,27 +1,33 @@
-# Reproducibility and Scope
+# Implementation and Evaluation Notes
 
 ## What Is Preserved
 
-The release preserves the transitive source dependencies of
-`CrossExpertTrajectorySegmentor`. Historical module names remain under
-`cpr_sam3/research/` to make comparison against original experiment code easier.
-The mechanical provenance manifest records source/destination files and hashes.
-Only imports and private default asset paths are rewritten in these files.
+The implementation of `CrossExpertTrajectorySegmentor` and its dependencies
+is retained under `cpr_sam3/research/`. Historical module names are kept for
+comparison with the experiment code. [provenance.json](../provenance.json)
+records the source files and hashes. Changes to those files are limited to
+imports and default asset paths.
 
-Package initializers intentionally do not import the old diagnostic metrics.
-The public evaluator uses the fixed final prediction with standard IoU metrics;
-ground-truth oracle comparisons are not used to select a deployed output.
+The public evaluator measures the configured final prediction with standard
+IoU metrics. Historical diagnostic metrics are not imported, and ground-truth
+oracle comparisons do not select the output.
 
-The external baseline is not redistributed. Its normalized SHA256 at assembly
-is recorded in `provenance.json`. The matching baseline was compared with the
-official repository on 2026-10-26. A future Git checkout may differ. Startup
-rejects mismatches unless `--allow-upstream-drift` is explicitly supplied.
-Changing it creates a different experimental setting, not a verified historical
-reproduction. A content hash does not pin all SAM3/DINOv3 dependencies.
+## Upstream Version
+
+The installation command pins SegEarth-OV3 to
+[`87e5cc18c8bc9c0b4713b975587281ac1c97c79a`](https://github.com/earth-insights/SegEarth-OV-3/tree/87e5cc18c8bc9c0b4713b975587281ac1c97c79a).
+Its baseline file matches the normalized SHA256 in `provenance.json`, checked
+on 2026-10-27. The baseline is loaded from that external checkout rather than
+copied into this repository.
+
+Startup checks the baseline hash. To test a different version, pass
+`--allow-upstream-drift` and record that version with the results. The pinned
+baseline does not pin the SAM3 or DINOv3 packages, nor recover the original
+experiment environment.
 
 ## Fixed Outputs
 
-The source research visualization configs prescribe these evidence-max families:
+Each benchmark profile specifies one output family:
 
 | Benchmark profile | Output family |
 | --- | --- |
@@ -30,15 +36,15 @@ The source research visualization configs prescribe these evidence-max families:
 | LoveDA | `schema_route` |
 | OpenEarthMap | `direct_raw` |
 
-These are historical, explicit benchmark configurations. The public runner
-does not read labels or IoUs to choose a family. Do not describe this release
-as a universal, newly validated image-adaptive routing policy. Changing families
-after observing test mIoU is not a label-free evaluation protocol.
+These settings come from the research visualization configs. The runner does
+not read labels or IoUs to choose a family. They are benchmark-specific
+settings, not a validated universal routing policy; selecting a different
+family after checking test mIoU would be test-label tuning.
 
-## Manuscript / Implementation Audit
+## Differences from the Manuscript Description
 
-The compact manuscript equation is not a complete executable specification of
-the preserved research implementation. The implementation also includes:
+The manuscript equations describe the overall procedure, but are not a
+complete specification of the implementation. The code also includes:
 
 - Fixed response and class-schema hypotheses.
 - Candidate confirmation/veto and prototype rescue gates.
@@ -46,45 +52,41 @@ the preserved research implementation. The implementation also includes:
   a local-support threshold and a bounded change budget.
 - Evidence-max reconciliation between the response and rotation branches.
 
-In particular, setting the minimum vote count to one does not mean all the
-other gates are disabled. Conversely, in a candidate-union-only mathematical
-description, a one-vote gate alone cannot exclude union members. Resolve this
-description-versus-code issue before claiming that a simplified formula
-reproduces the reported result or interpreting a module-only ablation.
+Setting the minimum vote count to one leaves the other gates active. In a
+candidate-union-only formulation, that vote threshold alone cannot exclude
+members of the union. This distinction matters for interpreting module
+ablations or implementing the compact formula independently.
 
-This release does not fabricate missing experiments, alter reported scores,
-or silently replace the implementation with the simplified equation. The
-original-run checkpoint versions, prototype reference lists and result
-provenance must be reconciled with the manuscript before a final verified tag.
+Exact agreement between this packaged implementation, the manuscript equations,
+and the ablation definitions has not been established. It still requires the
+original checkpoint versions, reference-image lists, and raw evaluation logs.
 
 ## Prototype Protocol
 
-The builder copies the original deterministic sorted-uniform image selection,
-quality-weighted pooling and clustering helpers. It uses LVD normalization and
-frozen DINOv3 ViT-L/16. It records every selected RGB reference image and hash.
-It reads no annotation masks. However, a different reference set, preprocessing
-layout, backbone revision or checkpoint can change the bank and results.
-Original historical banks are not bundled, so rebuilding alone does not prove
-bitwise identity with the manuscript's bank.
+The builder uses the original sorted-uniform image sampling, quality-weighted
+pooling, and clustering functions with frozen DINOv3 ViT-L/16 and LVD
+normalization. It records the reference RGB images and their hashes and reads
+no annotation masks. The original banks are not bundled. Reference images,
+preprocessing, encoder revisions, and checkpoints can all affect a rebuilt bank.
 
-When reference and evaluation images overlap, report the transductive setting.
-Image-disjoint evaluation requires an independently selected reference source
-and an explicit overlap audit. Test-label tuning must not be used to choose
-reference images, thresholds or prompts.
+The README example is transductive because its reference images come from the
+evaluation partition. Image-disjoint evaluation needs a separate reference
+source and an overlap check. Reference images, thresholds, and prompts must
+be selected without test-label tuning.
 
 ## Environment and Performance
 
-The wrapper records installed package versions for each inference run. No
-complete original server lockfile was recovered into this source-only release.
-`requirements.txt` is therefore not presented as a validated CUDA lockfile.
-SAM3 and MMCV compatibility must be verified in the intended environment.
+Each run records installed package versions. The original server environment
+lockfile is unavailable; `requirements.txt` lists wrapper dependencies, not a
+validated CUDA environment. SAM3 and MMCV compatibility still needs testing
+in the intended GPU environment.
 
-The preserved research predictor computes multiple historical candidates.
-The public wrapper selects one afterward. This favors source fidelity over
-optimized inference; do not attribute manuscript latency/memory numbers to
-this wrapper without remeasurement. Bank construction cost is additional.
+The research predictor computes multiple candidates before the wrapper selects
+the configured output. Runtime and peak memory for this wrapper have not been
+measured; manuscript efficiency figures cannot be assumed to apply. Prototype
+construction is an additional cost and should be measured separately.
 
-## Validation Checklist
+## Remaining GPU Checks
 
 - [ ] Confirm upstream source and exact SAM3 / DINOv3 revisions.
 - [ ] Run `tools/doctor.py` in the intended CUDA environment.

@@ -32,6 +32,14 @@ def research_method(relative, class_name, method_name):
 
 
 class ReleaseTests(unittest.TestCase):
+    def test_documented_baseline_revision_matches_provenance(self):
+        provenance = json.loads((ROOT / "provenance.json").read_text())
+        commit = provenance["external_baseline"]["commit"]
+        self.assertEqual(len(commit), 40)
+        int(commit, 16)
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn(f"git -C third_party/SegEarth-OV-3 checkout {commit}", readme)
+
     def test_root_entry_points_work_outside_repository(self):
         with tempfile.TemporaryDirectory() as directory:
             for name in ("demo.py", "eval.py", "build_prototypes.py"):
