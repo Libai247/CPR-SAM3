@@ -1,8 +1,31 @@
-# Install the CUDA-compatible SAM3 / SegEarth-OV3 environment first.
-# These ranges describe the wrapper API, not a validated CUDA environment lock.
-numpy>=1.24,<3
-Pillow>=10
-mmengine>=0.10.7,<1
+# Install the CUDA PyTorch wheels and compiled MMCV first; see README.md.
+# Core versions recovered from the experiment environment records.
+torch==2.10.0
+torchvision==0.25.0
+numpy==1.26.4
+mmcv==2.1.0
+mmengine==0.10.7
 mmsegmentation==1.2.2
-# Install mmcv>=2.0.0rc4,<2.2.0 separately for your PyTorch/CUDA combination.
-# SAM3, DINOv3 and torch/torchvision are external dependencies; see README.md.
+
+# Image IO. Use one OpenCV distribution, not both GUI and headless wheels.
+Pillow>=10
+opencv-python==4.11.0.86
+
+# SAM3 / DINOv3 and MMSegmentation import dependencies.
+# ftfy follows the official SAM3 package requirement; the remaining entries
+# are dependencies, not a recovered full-environment version lock.
+timm>=1.0.17,<2
+ftfy==6.1.1
+regex
+einops
+iopath>=0.1.10
+huggingface-hub
+tqdm
+scipy
+scikit-image
+pycocotools
+psutil
+hydra-core
+omegaconf
+typing-extensions>=4.12
+packaging

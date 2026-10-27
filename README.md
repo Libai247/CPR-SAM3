@@ -53,9 +53,16 @@ Comparison with SCLIP, ClearCLIP, ResCLIP, and SegEarth-OV3.
 
 ## Installation
 
-Use a CUDA environment with [SAM3](https://github.com/facebookresearch/sam3#installation)
-and [MMSegmentation](https://mmsegmentation.readthedocs.io/en/latest/get_started.html#installation)
-installed. MMCV must be built for the installed PyTorch/CUDA versions.
+The experiment environment used **Python 3.12.13, PyTorch 2.10.0+cu128,
+TorchVision 0.25.0+cu128, and MMCV 2.1.0** on Linux. Start with:
+
+```bash
+conda create -n cpr-sam3 python=3.12.13 -y
+conda activate cpr-sam3
+python -m pip install torch==2.10.0 torchvision==0.25.0 --index-url https://download.pytorch.org/whl/cu128
+```
+
+Clone the code and external source trees:
 
 ```bash
 git clone https://github.com/Libai247/CPR-SAM3.git
@@ -63,10 +70,21 @@ cd CPR-SAM3
 git clone https://github.com/earth-insights/SegEarth-OV-3.git third_party/SegEarth-OV-3
 git -C third_party/SegEarth-OV-3 checkout 87e5cc18c8bc9c0b4713b975587281ac1c97c79a
 git clone https://github.com/facebookresearch/dinov3.git third_party/dinov3
+```
+
+Install **full MMCV 2.1.0 with compiled ops** using the
+[environment setup instructions](docs/ENVIRONMENT.md#mmcv), then install the
+remaining dependencies:
+
+```bash
 python -m pip install -r requirements.txt
 ```
 
-The SegEarth-OV3 revision above matches the baseline source used by this adapter.
+The recorded MMCV build has CPU ops; SAM3 and DINOv3 still run on the GPU.
+`mmcv-lite` is not a substitute. The pinned SegEarth-OV3 checkout supplies the
+SAM3 source used by the adapter, so a separate SAM3 installation is not required.
+See [Environment](docs/ENVIRONMENT.md) for the recorded versions and build details.
+
 Download the checkpoints separately:
 
 | Model | Checkpoint source |

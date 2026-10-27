@@ -5,7 +5,7 @@ Last CPU/source check: 2026-10-27.
 
 Performed in a CPU-only Python 3.12.14 / PyTorch 2.14.1+cpu runtime:
 
-- Twelve unit tests passed with `python -m unittest discover -s tests -v`.
+- Fourteen unit tests passed with `python -m unittest discover -s tests -v`.
 - Prototype pooling/clustering, trajectory gates and evidence ties were checked
   with synthetic tensors using real CPU PyTorch.
 - The public model's import closure and final-output selection were checked
@@ -18,6 +18,9 @@ Performed in a CPU-only Python 3.12.14 / PyTorch 2.14.1+cpu runtime:
   prompt banks, private paths and credential-pattern checks passed.
 - The README's pinned baseline revision matches `provenance.json`. The
   corresponding upstream file was fetched and its normalized hash verified.
+- Framework pins were checked against the historical environment records;
+  requirement syntax, CUDA-wheel version matching, and bundled SAM3 discovery
+  are covered by CPU tests. These do not validate a fresh dependency installation.
 
 CUDA was unavailable. No SAM3 or DINOv3 checkpoint was loaded. No dataset was
 evaluated, no real inference image was generated, and no fresh GPU environment

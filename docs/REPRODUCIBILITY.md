@@ -76,10 +76,11 @@ be selected without test-label tuning.
 
 ## Environment and Performance
 
-Each run records installed package versions. The original server environment
-lockfile is unavailable; `requirements.txt` lists wrapper dependencies, not a
-validated CUDA environment. SAM3 and MMCV compatibility still needs testing
-in the intended GPU environment.
+Each run records installed package versions. Core versions have been recovered
+from the experiment restore record and evaluation logs; see
+[Environment](ENVIRONMENT.md). The complete original server lockfile and MMCV
+build details remain unavailable. The documented installation has not yet
+been validated from scratch in a fresh CUDA environment.
 
 The research predictor computes multiple candidates before the wrapper selects
 the configured output. Runtime and peak memory for this wrapper have not been

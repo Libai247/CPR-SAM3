@@ -32,6 +32,44 @@ def research_method(relative, class_name, method_name):
 
 
 class ReleaseTests(unittest.TestCase):
+    def test_dependency_pins_match_recorded_framework_versions(self):
+        from packaging.requirements import Requirement
+
+        requirements = [
+            Requirement(line) for line in (ROOT / "requirements.txt").read_text().splitlines()
+            if line.strip() and not line.lstrip().startswith("#")
+        ]
+        by_name = {item.name: item for item in requirements}
+        self.assertEqual(len(by_name), len(requirements))
+        expected = {"torch": "2.10.0", "torchvision": "0.25.0", "numpy": "1.26.4",
+                    "mmcv": "2.1.0", "mmengine": "0.10.7", "mmsegmentation": "1.2.2"}
+        for name, version in expected.items():
+            self.assertEqual(str(by_name[name].specifier), "==" + version)
+        self.assertIn("2.10.0+cu128", by_name["torch"].specifier)
+        self.assertNotIn("2.0.0", by_name["numpy"].specifier)
+        self.assertNotIn("mmcv-lite", by_name)
+        self.assertIn("opencv-python", by_name)
+        self.assertNotIn("opencv-python-headless", by_name)
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("--index-url https://download.pytorch.org/whl/cu128", readme)
+
+    def test_doctor_finds_bundled_sam3_without_importing_it(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            package = root / "upstream/sam3"
+            package.mkdir(parents=True)
+            (package / "__init__.py").write_text("raise RuntimeError('Must not import model code for discovery')\n")
+            settings = dict(segearthov3_repo="upstream", dinov3_repo="dino", sam3_checkpoint="s.pt", dinov3_checkpoint="d.pt", sam3_bpe="bpe.gz")
+            paths = root / "paths.json"
+            paths.write_text(json.dumps(settings))
+            result = subprocess.run(
+                [sys.executable, str(ROOT / "tools/doctor.py"), "--paths", str(paths)],
+                cwd=directory, capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(result.returncode, 1, result.stderr)
+            self.assertIn("OK package sam3 (SegEarth-OV3 checkout)", result.stdout)
+            self.assertNotIn("Must not import model code", result.stdout + result.stderr)
+
     def test_documented_baseline_revision_matches_provenance(self):
         provenance = json.loads((ROOT / "provenance.json").read_text())
         commit = provenance["external_baseline"]["commit"]
