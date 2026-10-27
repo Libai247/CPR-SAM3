@@ -29,15 +29,23 @@ reconciliation (RCR).
 
 ## Results
 
-Semantic segmentation results (mIoU, %). The baseline is SegEarth-OV3.
+Semantic segmentation results from Table 1 of the manuscript (mIoU, %).
+The best result in each column is in bold. SegEarth-OV3 is the SAM3 baseline.
 
-| Dataset | Baseline | CPR-SAM3 |
-| :--- | ---: | ---: |
-| Vaihingen | 60.76 | **62.93** |
-| Potsdam | 57.85 | **60.15** |
-| LoveDA | 47.37 | **49.59** |
-| OpenEarthMap | 44.10 | **47.23** |
-| Mean | 52.52 | **54.98** |
+| Method | Vaihingen | Potsdam | LoveDA | OpenEarthMap | Mean |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| CLIP | 10.80 | 15.60 | 12.40 | 12.00 | 12.70 |
+| MaskCLIP | 29.90 | 33.90 | 27.80 | 25.10 | 29.18 |
+| SCLIP | 35.90 | 39.60 | 30.40 | 29.30 | 33.80 |
+| ClearCLIP | 36.20 | 42.00 | 32.40 | 31.00 | 35.40 |
+| SegEarth-OV | 40.00 | 48.50 | 36.90 | 40.30 | 41.43 |
+| ProxyCLIP | 47.50 | 49.00 | 34.30 | 38.90 | 42.43 |
+| CorrCLIP | 47.00 | 51.90 | 36.90 | 32.90 | 42.18 |
+| ReAttnCLIP | 29.90 | 48.70 | 37.00 | 41.10 | 39.18 |
+| ConInfer | 31.37 | 49.99 | 39.33 | 41.95 | 40.66 |
+| TMPA | 43.40 | 51.10 | 39.70 | 42.20 | 44.10 |
+| SegEarth-OV3 | 60.76 | 57.85 | 47.37 | 44.10 | 52.52 |
+| **CPR-SAM3 (ours)** | **62.93** | **60.15** | **49.59** | **47.23** | **54.98** |
 
 Results and figures are from the manuscript. This release has passed CPU tests;
 end-to-end GPU reproduction is pending. See [implementation and evaluation notes](docs/REPRODUCIBILITY.md).
