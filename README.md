@@ -33,7 +33,7 @@ Semantic segmentation results from Table 1 of the manuscript (mIoU, %).
 The best result in each column is in bold. SegEarth-OV3 is the SAM3 baseline.
 
 | Method | Vaihingen | Potsdam | LoveDA | OpenEarthMap | Mean |
-| :--- | ---: | ---: | ---: | ---: | ---: |
+| :--- | :---: | :---: | :---: | :---: | :---: |
 | CLIP | 10.80 | 15.60 | 12.40 | 12.00 | 12.70 |
 | MaskCLIP | 29.90 | 33.90 | 27.80 | 25.10 | 29.18 |
 | SCLIP | 35.90 | 39.60 | 30.40 | 29.30 | 33.80 |
